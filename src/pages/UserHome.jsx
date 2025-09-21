@@ -1,8 +1,8 @@
 import Sidebar from "../components/user/Sidebar";
 import Parties from "../components/Parties";
 import VoteResult from "../components/VoteResult";
-import Party from "../components/Party";
 import UserStore from "../store/UserStote";
+import UserPageParty from "../components/user/UserPageParty";
 
 function UserHome() {
   const {isUser} = UserStore();
@@ -21,7 +21,7 @@ function UserHome() {
         <div className="p-5">
           {isUser() ? (
             <>
-              <Party />
+              <UserPageParty />
             </>
           ) : (
             <></>

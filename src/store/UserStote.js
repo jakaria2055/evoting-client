@@ -53,20 +53,40 @@ const UserStore = create((set) => ({
     }
   },
 
+  // UserLogoutRequest: async () => {
+  //   try {
+  //     // Just call logout, backend will get refreshtoken from cookies
+  //     let res = await axios.post(
+  //       `${BaseURL}/user/logout`,
+  //       {},
+  //       { withCredentials: true }
+  //     );
+  //     return res.data.success === true;
+  //   } catch (e) {
+  //     console.log(e);
+  //     return false;
+  //   }
+  // },
+
   UserLogoutRequest: async () => {
-    try {
-      // Just call logout, backend will get refreshtoken from cookies
-      let res = await axios.post(
-        `${BaseURL}/user/logout`,
-        {},
-        { withCredentials: true }
-      );
-      return res.data.success === true;
-    } catch (e) {
-      console.log(e);
-      return false;
-    }
-  },
+  try {
+    // Try to call backend logout
+    let res = await axios.post(
+      `${BaseURL}/user/logout`,
+      {},
+      {
+        headers: {
+          usertoken: localStorage.getItem("usertoken"),
+        },
+      }
+    );
+    return res.data.success === true;
+  } catch (e) {
+    console.log("Backend logout failed, doing client-side logout:", e);
+    // Even if backend fails, we can still logout on frontend
+    return true;
+  }
+},
 
   PartyDetails: null,
   PartyDetailsRequest: async () => {
@@ -127,6 +147,26 @@ const UserStore = create((set) => ({
         success: false,
         message: e.response?.data?.message || "Failed to submit vote",
       };
+    }
+  },
+
+  VoteResultList: null,
+  VoteResultRequest: async () => {
+    try {
+      set({ VoteResultList: null });
+      let res = await axios.get(
+        `${BaseURL}/user/get-result`,
+        {},
+        {
+          headers: {
+            usertoken: localStorage.getItem("usertoken"),
+          },
+        }
+      );
+      set({ VoteResultList: res.data });
+    } catch (e) {
+      console.log("Get Result error:", e);
+      unauthorized(e.response.status);
     }
   },
 }));

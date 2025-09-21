@@ -1,64 +1,54 @@
-import React from "react";
+import React, { useEffect } from "react";
+import UserStore from "../store/UserStote";
 
 function VoteResult() {
-  // Mock data based on your response structure
-  const voteResults = [
-    {
-      "positions": [
-        {
-          "position": "Member",
-          "totalVotes": 0
-        },
-        {
-          "position": "GS",
-          "totalVotes": 1
-        }
-      ],
-      "party": "BAL"
-    },
-    {
-      "positions": [
-        {
-          "position": "GS",
-          "totalVotes": 1
-        },
-        {
-          "position": "Chairman",
-          "totalVotes": 1
-        },
-        {
-          "position": "VP",
-          "totalVotes": 1
-        }
-      ],
-      "party": "NATIONAL CITIZEN PARTY"
-    },
-    {
-      "positions": [
-        {
-          "position": "GS",
-          "totalVotes": 1
-        },
-        {
-          "position": "Member",
-          "totalVotes": 0
-        },
-        {
-          "position": "AGS",
-          "totalVotes": 1
-        },
-        {
-          "position": "Chairman",
-          "totalVotes": 1
-        }
-      ],
-      "party": "BANGLADESH NATIONAL PARTY"
-    }
-  ];
+  const { VoteResultRequest, VoteResultList } = UserStore();
+  
+  useEffect(() => {
+    (async () => {
+      await VoteResultRequest();
+    })();
+  }, []);
 
-  // Get all unique positions
+
+  // Handle loading state
+  if (VoteResultList === null) {
+    return (
+      <div className="bg-white min-h-screen p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading election results...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle empty or invalid data
+  if (!VoteResultList || !Array.isArray(VoteResultList) || VoteResultList.length === 0) {
+    return (
+      <div className="bg-white min-h-screen p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Election Results Dashboard
+            </h1>
+            <p className="text-gray-600">No results available yet</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Use the real API data instead of mock data
+  const voteResults = VoteResultList;
+
+  // Get all unique positions - with safety check
   const allPositions = [...new Set(
-    voteResults.flatMap(party => party.positions.map(pos => pos.position))
+    voteResults.flatMap(party => 
+      party.positions ? party.positions.map(pos => pos.position) : []
+    )
   )].sort();
 
   // Get party colors for better visualization
@@ -110,13 +100,13 @@ function VoteResult() {
                 </h3>
                 <div className={`w-12 h-12 ${getPartyColor(index)} rounded-full mx-auto flex items-center justify-center`}>
                   <span className="text-white font-bold text-lg">
-                    {partyData.party.charAt(0)}
+                    {partyData.party ? partyData.party.charAt(0) : '?'}
                   </span>
                 </div>
               </div>
 
               <div className="space-y-3">
-                {partyData.positions.map((position, posIndex) => (
+                {partyData.positions && partyData.positions.map((position, posIndex) => (
                   <div key={posIndex} className="flex justify-between items-center bg-gray-50 rounded-lg p-3">
                     <span className="font-medium text-gray-700">
                       {position.position}
@@ -148,7 +138,7 @@ function VoteResult() {
                 
                 <div className="space-y-2">
                   {voteResults.map((partyData, partyIndex) => {
-                    const positionData = partyData.positions.find(p => p.position === position);
+                    const positionData = partyData.positions && partyData.positions.find(p => p.position === position);
                     if (!positionData) return null;
                     
                     return (
@@ -169,7 +159,7 @@ function VoteResult() {
         </div>
 
         {/* Summary Stats */}
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="bg-blue-100 border border-blue-200 rounded-lg p-4 text-center">
             <div className="text-2xl font-bold text-blue-800">
               {voteResults.length}
@@ -187,21 +177,10 @@ function VoteResult() {
           <div className="bg-purple-100 border border-purple-200 rounded-lg p-4 text-center">
             <div className="text-2xl font-bold text-purple-800">
               {voteResults.reduce((sum, party) => 
-                sum + party.positions.reduce((posSum, pos) => posSum + pos.totalVotes, 0), 0
+                sum + (party.positions ? party.positions.reduce((posSum, pos) => posSum + pos.totalVotes, 0) : 0), 0
               )}
             </div>
             <div className="text-sm text-purple-600">Total Votes</div>
-          </div>
-          
-          <div className="bg-yellow-100 border border-yellow-200 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-yellow-800">
-              {Math.round(
-                (voteResults.reduce((sum, party) => 
-                  sum + party.positions.reduce((posSum, pos) => posSum + pos.totalVotes, 0), 0
-                ) / (voteResults.length * allPositions.length)) * 100
-              )}%
-            </div>
-            <div className="text-sm text-yellow-600">Avg Turnout</div>
           </div>
         </div>
       </div>

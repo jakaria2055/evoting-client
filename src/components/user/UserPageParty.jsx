@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import AdminStore from "../store/AdminStore";
+import UserStore from "../../store/UserStote";
 
-function Party() {
-  const { PartyDetails, PartyDetailsRequest } = AdminStore();
+function UserPageParty() {
+  const { PartyDetails, PartyDetailsRequest } = UserStore();
 
   useEffect(() => {
     (async () => {
@@ -59,4 +59,4 @@ function Party() {
   );
 }
 
-export default Party;
+export default UserPageParty;

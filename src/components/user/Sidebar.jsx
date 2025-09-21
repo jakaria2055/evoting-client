@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import UserStore from "../../store/UserStote";
+import toast from "react-hot-toast";
 
 function Sidebar() {
   const navigate = useNavigate();
@@ -10,8 +11,11 @@ function Sidebar() {
     await UserLogoutRequest();
     sessionStorage.clear();
     localStorage.clear();
+    window.location.reload(); 
     navigate("/user-home");
+    toast.success("Logout Successfully.")
   };
+
   return (
     <div className="text-sm w-full p-3 bg-white border border-gray-500/30 text-gray-800/80 rounded-md font-medium">
       <ul className="flex flex-col gap-px">
@@ -83,7 +87,7 @@ function Sidebar() {
           </svg>
         </NavLink>
         <div className="w-full h-px bg-gray-300/50 my-2"></div>
-        <NavLink
+        <div
         onClick={onLogout}
           title="Sign Out"
           className="flex items-center text-red-600/80 justify-between gap-3 cursor-pointer px-3 py-2 rounded hover:bg-red-600/20 transition"
@@ -105,7 +109,7 @@ function Sidebar() {
               strokeLinejoin="round"
             />
           </svg>
-        </NavLink>
+        </div>
       </ul>
     </div>
   );

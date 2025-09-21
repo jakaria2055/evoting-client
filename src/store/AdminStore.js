@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import Cookies from "js-cookie";
 import axios from "axios";
-import { setEmail } from "../utility/utility";
+import { setEmail, unauthorized } from "../utility/utility";
 
 // const BaseURL = "https://evoting-server-pi.vercel.app/api/v1";
 
@@ -71,21 +71,23 @@ const AdminStore = create((set, get) => ({
       let res = await axios.post(
         `${BaseURL}/admin/logout`,
         {},
-        { withCredentials: true }
+        {
+          headers: {
+            accesstoken: localStorage.getItem("accesstoken"),
+          },
+        }
       );
       set({ isFormSubmit: false });
       return res.data.success === true;
     } catch (e) {
-      console.log(e)
+      console.log(e);
       set({ isFormSubmit: false });
       return false;
     }
   },
 
 
-
-
-   // Static positions
+  // Static positions
   availablePositions: ["Member", "AGS", "GS", "Chairman", "VP"],
 
   // Form state
@@ -170,7 +172,62 @@ const AdminStore = create((set, get) => ({
   // Clear API result
   ClearPartyCreateResult: () => set({ partyCreateResult: null }),
 
+  //PARTY DETAILS
+  PartyDetails: null,
+  PartyDetailsRequest: async () => {
+    try {
+      let res = await axios.get(`${BaseURL}/admin/read-party`, {
+        headers: {
+          accesstoken: localStorage.getItem("accesstoken"),
+        },
+      });
+      if (res.data["data"].length > 0) {
+        set({ PartyDetails: res.data["data"] });
+      } else {
+        set({ PartyDetails: [] });
+      }
+    } catch (e) {
+      unauthorized(e.response.status);
+    }
+  },
 
+  NIDFormData: { nidNumber: "", name: "" },
+  NIDFormChange: (name, value) => {
+    set((state) => ({
+      NIDFormData: {
+        ...state.NIDFormData,
+        [name]: value,
+      },
+    }));
+  },
+
+  AddNIDRequest: async (postBody) => {
+    let res = await axios.post(`${BaseURL}/admin/add-nid`, postBody, {
+      headers: {
+        accesstoken: localStorage.getItem("accesstoken"),
+      },
+    });
+    return res.data.success === true;
+  },
+
+  NIDList: null,
+  NIDListRequest: async () => {
+     try {
+      let res = await axios.get(`${BaseURL}/admin/read-nid`, {
+        headers: {
+          accesstoken: localStorage.getItem("accesstoken"),
+        },
+      });
+      if (res.data["data"].length > 0) {
+        set({ NIDList: res.data["data"] });
+      } else {
+        set({ NIDList: [] });
+      }
+    } catch (e) {
+      unauthorized(e.response.status);
+    }
+  },
+  
 }));
 
 export default AdminStore;

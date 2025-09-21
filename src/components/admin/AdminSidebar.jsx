@@ -5,16 +5,16 @@ function AdminSidebar() {
     <div className="text-sm w-full p-3 bg-white border border-gray-500/30 text-gray-800/80 rounded-md font-medium">
       <ul className="flex flex-col gap-px">
         <NavLink
-          title="Sign UP"
-          to={"/user/signup"}
+          title="Add NID"
+          to={"/admin/add-nid"}
           className="flex items-center justify-between gap-3 cursor-pointer px-3 py-2 rounded hover:bg-gray-500/20 transition"
         >
           <p className="hidden sm:block">Add NID</p>
           <img src="/icon/registration.svg" alt="" />
         </NavLink>
         <NavLink
-          title="Sign IN"
-          to={"/user/signin"}
+          title="Get NID"
+          to={"/admin/get-nid"}
           className="flex items-center justify-between gap-2 cursor-pointer px-3 py-2 rounded hover:bg-gray-500/20 transition"
         >
           <p className="-mr-px hidden sm:block">Get NID</p>

@@ -16,7 +16,7 @@ function AdminLogin() {
       let res = await LoginRequest(AdminFormData);
       if (res) {
         toast.success("Logged in Successfully");
-        navigate("/");
+        navigate("/admin/services");
       } else {
         toast.error("Something went wrong");
       }

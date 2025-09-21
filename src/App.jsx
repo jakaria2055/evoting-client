@@ -16,6 +16,8 @@ import AdminParties from "./pages/Admin_Pages/AdminServices";
 import GetParties from "./pages/Admin_Pages/GetParties";
 import AdminServices from "./pages/Admin_Pages/AdminServices";
 import AddParties from "./pages/Admin_Pages/AddParties";
+import AddNID from "./pages/Admin_Pages/AddNID";
+import GetNID from "./pages/Admin_Pages/GetNID";
 
 function App() {
   return (
@@ -35,6 +37,8 @@ function App() {
         <Route path="/admin/services" element={<AdminServices />} />
         <Route path="/admin/get-parties" element={<GetParties />} />
         <Route path="/admin/add-parties" element={<AddParties />} />
+        <Route path="/admin/add-nid" element={<AddNID />} />
+        <Route path="/admin/get-nid" element={<GetNID />} />
       </Routes>
       <Footer />
     </>
