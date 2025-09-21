@@ -76,6 +76,7 @@ const AdminStore = create((set, get) => ({
       set({ isFormSubmit: false });
       return res.data.success === true;
     } catch (e) {
+      console.log(e)
       set({ isFormSubmit: false });
       return false;
     }

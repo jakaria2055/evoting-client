@@ -63,28 +63,72 @@ const UserStore = create((set) => ({
       );
       return res.data.success === true;
     } catch (e) {
+      console.log(e);
       return false;
     }
   },
 
-  PartyDetails:null,
+  PartyDetails: null,
   PartyDetailsRequest: async () => {
-      try {
-        let res = await axios.get(`${BaseURL}/user/read-party`,{
-          headers:{
-            usertoken: localStorage.getItem("usertoken")
-          }
-        });
-        if (res.data["data"].length > 0) {
-          set({ PartyDetails: res.data["data"]});
-        } else {
-          set({ PartyDetails: [] });
+    try {
+      let res = await axios.get(`${BaseURL}/user/read-party`, {
+        headers: {
+          usertoken: localStorage.getItem("usertoken"),
+        },
+      });
+      if (res.data["data"].length > 0) {
+        set({ PartyDetails: res.data["data"] });
+      } else {
+        set({ PartyDetails: [] });
+      }
+    } catch (e) {
+      unauthorized(e.response.status);
+    }
+  },
+
+  PartyListByPosition: null,
+  PartyListByPositionRequest: async (position) => {
+    try {
+      set({ PartyListByPosition: null });
+      let res = await axios.get(`${BaseURL}/user/listByPosition/${position}`, {
+        headers: {
+          usertoken: localStorage.getItem("usertoken"),
+        },
+      });
+      if (res.data.success === true) {
+        set({ PartyListByPosition: res.data.parties });
+      } else {
+        set({ PartyListByPosition: [] });
+      }
+    } catch (e) {
+      console.log(e);
+      unauthorized(e.response.status);
+    }
+  },
+
+  SubmitVoteRequest: async (id, position) => {
+    try {
+      let res = await axios.post(
+        `${BaseURL}/user/submit-vote/${id}/${position}`,
+        {},
+        {
+          headers: {
+            usertoken: localStorage.getItem("usertoken"),
+          },
         }
-      } catch (e) {
+      );
+      return res.data;
+    } catch (e) {
+      console.log("Submit vote error:", e);
+      if (e.response?.status === 401) {
         unauthorized(e.response.status);
       }
-    },
-    
+      return {
+        success: false,
+        message: e.response?.data?.message || "Failed to submit vote",
+      };
+    }
+  },
 }));
 
 export default UserStore;
