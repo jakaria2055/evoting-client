@@ -1,16 +1,12 @@
 import { create } from "zustand";
-import Cookies from "js-cookie";
 import axios from "axios";
 import { setEmail, unauthorized } from "../utility/utility";
 
-// const BaseURL = "https://evoting-server-pi.vercel.app/api/v1";
 
-const BaseURL = "http://localhost:3000/api/v1";
+// const BaseURL = "http://localhost:3000/api/v1";
+const BaseURL ="https://evoting-server-pi.vercel.app/api/v1";
 
 const AdminStore = create((set, get) => ({
-  //   isAdmin: () => {
-  //     return !!Cookies.get("accesstoken");
-  //   },
 
   isAdmin: () => {
     return !!localStorage.getItem("accesstoken");

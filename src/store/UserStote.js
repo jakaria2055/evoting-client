@@ -2,7 +2,8 @@ import axios from "axios";
 import { create } from "zustand";
 import { setEmail, unauthorized } from "../utility/utility";
 
-const BaseURL = "http://localhost:3000/api/v1";
+// const BaseURL = "http://localhost:3000/api/v1";
+const BaseURL ="https://evoting-server-pi.vercel.app/api/v1";
 
 const UserStore = create((set) => ({
   isUser: () => {
@@ -24,6 +25,16 @@ const UserStore = create((set) => ({
     set((state) => ({
       LoginFormData: {
         ...state.LoginFormData,
+        [name]: value,
+      },
+    }));
+  },
+
+  NIDRegFormData: { email: "", nidNumber: "", name: "" },
+  NIDRegFormChange: (name, value) => {
+    set((state) => ({
+      NIDRegFormData: {
+        ...state.NIDRegFormData,
         [name]: value,
       },
     }));
@@ -53,20 +64,6 @@ const UserStore = create((set) => ({
     }
   },
 
-  // UserLogoutRequest: async () => {
-  //   try {
-  //     // Just call logout, backend will get refreshtoken from cookies
-  //     let res = await axios.post(
-  //       `${BaseURL}/user/logout`,
-  //       {},
-  //       { withCredentials: true }
-  //     );
-  //     return res.data.success === true;
-  //   } catch (e) {
-  //     console.log(e);
-  //     return false;
-  //   }
-  // },
 
   UserLogoutRequest: async () => {
   try {
@@ -169,6 +166,23 @@ const UserStore = create((set) => ({
       unauthorized(e.response.status);
     }
   },
+
+
+  NIDRegRequest: async (postBody) => {
+    try {
+      const res = await axios.post(`${BaseURL}/user/register-nid`, postBody);
+      set({ NIDRegFormData: { email: "", nidNumber: "", name: "" } });
+      return res.data; // Return the full response data
+    } catch (error) {
+      console.log("NID Registration error:", error);
+      // Return error in consistent format
+      return {
+        success: false,
+        message: error.response?.data?.message || "Something went wrong",
+      };
+    }
+  },
+
 }));
 
 export default UserStore;

@@ -12,18 +12,17 @@ export default function Hero() {
             <span className="text-indigo-600">every industry</span>
           </h1>
 
-          <p className="mt-4 text-gray-600 max-w-md text-sm sm:text-base leading-relaxed">
-            Learn why professionals trust our solution to complete their
-            customer journey.
+          <p className="mt-4 text-gray-600 max-w-2xl text-sm sm:text-base leading-relaxed">
+            Transparent elections build trust in institutions, reducing political cynicism and apathy. Leaders elected through fair processes enjoy greater legitimacy and authority.
           </p>
           
 
           <div className="flex flex-col md:flex-row items-center mt-8 gap-3">
-            <button
+            <Link
               className="bg-indigo-600 text-white px-6 pr-2.5 py-2.5 rounded-full text-sm font-medium flex items-center space-x-2 hover:bg-indigo-700 transition-colors group"
-              type="button"
+              to={"/user/nid-reg"}
             >
-              <span>Registered Your NID</span>
+              <span>Apply to Registered NID</span>
               <svg
                 width={20}
                 height={20}
@@ -40,7 +39,7 @@ export default function Hero() {
                   strokeLinejoin="round"
                 />
               </svg>
-            </button>
+            </Link>
             <Link
               className="text-indigo-600 bg-indigo-100 px-5 py-2 rounded-full text-sm font-medium hover:bg-indigo-200 transition-colors"
               to={"/user-home"}
